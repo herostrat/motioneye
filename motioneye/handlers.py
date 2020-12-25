@@ -26,7 +26,7 @@ import socket
 import subprocess
 
 from tornado.ioloop import IOLoop
-from tornado.web import RequestHandler, StaticFileHandler, HTTPError, asynchronous
+from tornado.web import RequestHandler, StaticFileHandler, HTTPError
 
 from motioneye import config
 from motioneye import mediafiles
@@ -261,8 +261,7 @@ class ManifestHandler(BaseHandler):
 
 
 class ConfigHandler(BaseHandler):
-    @asynchronous
-    def get(self, camera_id=None, op=None):
+    async def get(self, camera_id=None, op=None):
         config.invalidate_monitor_commands()
 
         if camera_id is not None:
@@ -283,8 +282,7 @@ class ConfigHandler(BaseHandler):
         else:
             raise HTTPError(400, 'unknown operation')
 
-    @asynchronous
-    def post(self, camera_id=None, op=None):
+    async def post(self, camera_id=None, op=None):
         if camera_id is not None:
             camera_id = int(camera_id)
 
@@ -908,8 +906,7 @@ class PictureHandler(BaseHandler):
     def compute_etag(self):
         return None
 
-    @asynchronous
-    def get(self, camera_id, op, filename=None, group=None):
+    async def get(self, camera_id, op, filename=None, group=None):
         if camera_id is not None:
             camera_id = int(camera_id)
             if camera_id not in config.get_camera_ids():
@@ -939,8 +936,7 @@ class PictureHandler(BaseHandler):
         else:
             raise HTTPError(400, 'unknown operation')
 
-    @asynchronous
-    def post(self, camera_id, op, filename=None, group=None):
+    async def post(self, camera_id, op, filename=None, group=None):
         if group == '/':  # ungrouped
             group = ''
 
@@ -1393,8 +1389,8 @@ class PictureHandler(BaseHandler):
 
 
 class MovieHandler(BaseHandler):
-    @asynchronous
-    def get(self, camera_id, op, filename=None):
+
+    async def get(self, camera_id, op, filename=None):
         if camera_id is not None:
             camera_id = int(camera_id)
             if camera_id not in config.get_camera_ids():
@@ -1409,8 +1405,7 @@ class MovieHandler(BaseHandler):
         else:
             raise HTTPError(400, 'unknown operation')
 
-    @asynchronous
-    def post(self, camera_id, op, filename=None, group=None):
+    async def post(self, camera_id, op, filename=None, group=None):
         if group == '/':  # ungrouped
             group = ''
 
@@ -1561,9 +1556,8 @@ class MoviePlaybackHandler(StaticFileHandler, BaseHandler):
     if not os.path.exists(tmpdir):
         os.mkdir(tmpdir)
 
-    @asynchronous
     @BaseHandler.auth()
-    def get(self,  camera_id, filename=None, include_body=True):
+    async def get(self,  camera_id, filename=None, include_body=True):
         logging.debug('downloading movie %(filename)s of camera %(id)s' % {
                 'filename': filename, 'id': camera_id})
 
@@ -1640,8 +1634,8 @@ class MovieDownloadHandler(MoviePlaybackHandler):
 
 
 class ActionHandler(BaseHandler):
-    @asynchronous
-    def post(self, camera_id, action):
+
+    async def post(self, camera_id, action):
         camera_id = int(camera_id)
         if camera_id not in config.get_camera_ids():
             raise HTTPError(404, 'no such camera')
