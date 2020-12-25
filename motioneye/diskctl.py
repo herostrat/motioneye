@@ -127,14 +127,14 @@ def _list_disks_dev_by_id():
             }
 
     # group partitions by disk
-    for dev, partition in partitions_by_dev.items():
-        for disk_dev, disk in disks_by_dev.items():
+    for dev, partition in list(partitions_by_dev.items()):
+        for disk_dev, disk in list(disks_by_dev.items()):
             if dev.startswith(disk_dev):
                 disk['partitions'].append(partition)
                 partition.pop('unmatched', None)
 
     # add separate partitions that did not match any disk
-    for partition in partitions_by_dev.values():
+    for partition in list(partitions_by_dev.values()):
         if partition.pop('unmatched', False):
             disks_by_dev[partition['target']] = partition
             partition['partitions'] = [dict(partition)]

@@ -807,7 +807,7 @@ def motion_camera_ui_to_dict(ui, prev_config=None):
 
         if proto == 'v4l2':
             # video controls
-            vid_control_params = (('%s=%s' % (n, c['value'])) for n, c in ui['video_controls'].items())
+            vid_control_params = (('%s=%s' % (n, c['value'])) for n, c in list(ui['video_controls'].items()))
             data['vid_control_params'] = ','.join(vid_control_params)
 
     else:  # assuming netcam
@@ -1201,7 +1201,7 @@ def motion_camera_dict_to_ui(data):
         ui['resolution'] = str(data['width']) + 'x' + str(data['height'])
 
         video_controls = v4l2ctl.list_ctrls(data['videodevice'])
-        video_controls = [(n, c) for (n, c) in video_controls.items()
+        video_controls = [(n, c) for (n, c) in list(video_controls.items())
                           if 'min' in c and 'max' in c and 'value' in c]
 
         vid_control_params = data['vid_control_params'].split(',')
@@ -1241,7 +1241,7 @@ def motion_camera_dict_to_ui(data):
     elif data['@storage_device'].startswith('local-disk'):
         target_dev = data['@storage_device'][10:].replace('-', '/')
         mounted_partitions = diskctl.list_mounted_partitions()
-        for partition in mounted_partitions.values():
+        for partition in list(mounted_partitions.values()):
             if partition['target'] == target_dev and data['target_dir'].startswith(partition['mount_point']):
                 ui['root_directory'] = data['target_dir'][len(partition['mount_point']):] or '/'
                 break
@@ -1577,7 +1577,7 @@ def backup():
                       settings.CONF_PATH)
 
         cmd = ['tar', 'zc', 'motion.conf']
-        cmd += map(os.path.basename, glob.glob(os.path.join(settings.CONF_PATH, 'camera-*.conf')))
+        cmd += list(map(os.path.basename, glob.glob(os.path.join(settings.CONF_PATH, 'camera-*.conf'))))
         try:
             content = subprocess.check_output(cmd, cwd=settings.CONF_PATH)
             logging.debug('backup file created (%s bytes)' % len(content))

@@ -49,7 +49,7 @@ from motioneye import v4l2ctl
 
 class BaseHandler(RequestHandler):
     def get_all_arguments(self):
-        keys = self.request.arguments.keys()
+        keys = list(self.request.arguments.keys())
         arguments = dict([(key, self.get_argument(key)) for key in keys])
 
         for key in self.request.files:
@@ -328,7 +328,7 @@ class ConfigHandler(BaseHandler):
 
                         return self.finish_json({'error': msg})
 
-                    for key, value in local_config.items():
+                    for key, value in list(local_config.items()):
                         remote_ui_config[key.replace('@', '')] = value
 
                     # replace the real device url with the remote camera path
@@ -416,7 +416,7 @@ class ConfigHandler(BaseHandler):
             normal_password = main_config.get('@normal_password')
 
             additional_configs = config.get_additional_structure(camera=False)[1]
-            reboot_config_names = [('@_' + c['name']) for c in additional_configs.values() if c.get('reboot')]
+            reboot_config_names = [('@_' + c['name']) for c in list(additional_configs.values()) if c.get('reboot')]
             reboot = bool([k for k in reboot_config_names if old_main_config.get(k) != main_config.get(k)])
 
             config.set_main(main_config)
@@ -509,7 +509,7 @@ class ConfigHandler(BaseHandler):
                         finish()
 
                 # make sure main config is handled first
-                items = ui_config.items()
+                items = list(ui_config.items())
                 items = sorted(items, key=lambda key_cfg: key_cfg[0] != 'main')
 
                 for key, cfg in items:
@@ -647,7 +647,7 @@ class ConfigHandler(BaseHandler):
                             # if a remote camera is locally disabled, make sure the remote config says the same thing
                             remote_ui_config['enabled'] = False
 
-                        for key, value in local_config.items():
+                        for key, value in list(local_config.items()):
                             remote_ui_config[key.replace('@', '')] = value
 
                         cameras.append(remote_ui_config)
@@ -716,7 +716,7 @@ class ConfigHandler(BaseHandler):
                 if error:
                     return self.finish_json({'error': error})
 
-                for key, value in camera_config.items():
+                for key, value in list(camera_config.items()):
                     remote_ui_config[key.replace('@', '')] = value
 
                 self.finish_json(remote_ui_config)

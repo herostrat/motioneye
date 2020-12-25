@@ -87,14 +87,14 @@ def pretty_date_time(date_time, tzinfo=None, short=False):
         return pretty_date_time(datetime.datetime.fromtimestamp(date_time))
 
     if short:
-        text = u'{day} {month}, {hm}'.format(
+        text = '{day} {month}, {hm}'.format(
             day=date_time.day,
             month=date_time.strftime('%b'),
             hm=date_time.strftime('%H:%M')
         )
 
     else:
-        text = u'{day} {month} {year}, {hm}'.format(
+        text = '{day} {month} {year}, {hm}'.format(
             day=date_time.day,
             month=date_time.strftime('%B'),
             year=date_time.year,
@@ -125,7 +125,7 @@ def pretty_date(date):
     if isinstance(date, int):
         return pretty_date(datetime.datetime.fromtimestamp(date))
 
-    return u'{day} {month} {year}'.format(
+    return '{day} {month} {year}'.format(
         day=date.day,
         month=_(date.strftime('%B')),
         year=date.year

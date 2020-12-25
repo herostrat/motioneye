@@ -144,7 +144,7 @@ def update_mounts():
                 should_start = False
 
     # unmount the no longer necessary mounts
-    for (server, share, smb_ver, username), required in mounts.items():
+    for (server, share, smb_ver, username), required in list(mounts.items()):
         if not required:
             _umount(server, share, username)
             should_stop = True
