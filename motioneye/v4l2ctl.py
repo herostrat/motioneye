@@ -51,7 +51,7 @@ def list_devices():
     try:
         output = ''
         started = time.time()
-        p = subprocess.Popen(['v4l2-ctl', '--list-devices'], stdout=subprocess.PIPE, bufsize=1)
+        p = subprocess.Popen(['v4l2-ctl', '--list-devices'], stdout=subprocess.PIPE)
 
         fd = p.stdout.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
@@ -236,7 +236,7 @@ def list_ctrls(device):
     output = ''
     started = time.time()
     p = subprocess.Popen('v4l2-ctl -d %(device)s --list-ctrls' % {
-            'device': pipes.quote(device)}, shell=True, stdout=subprocess.PIPE, bufsize=1)
+            'device': pipes.quote(device)}, shell=True, stdout=subprocess.PIPE)
 
     fd = p.stdout.fileno()
     fl = fcntl.fcntl(fd, fcntl.F_GETFL)
